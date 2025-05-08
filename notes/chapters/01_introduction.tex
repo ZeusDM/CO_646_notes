@@ -1,1 +1,235 @@
 \chapter{Matroids}
+
+\begin{definition}[Matroid]
+    A (finite) \vocab{matroid} is a pair \( (E, \mathcal{I}) \) where
+    \(E\) is a finite set, called the \vocab{ground set}, and
+    \(\mathcal{I} \subseteq 2^E\) is a collection of subsets of \(E\) such that
+    \begin{enumerate}[label = \textup{(I\arabic*)}]
+        \item \(\mathcal{I} \neq \emptyset\), \label{item:matroid:nonempty}
+        \item for all \(I \in \mathcal{I}\) and \(J \subseteq I\), we have \(J \in \mathcal{I}\), \label{item:matroid:hereditary}
+        \item for all \(I, J \in \mathcal{I}\) with \(|I| < |J|\), there exists \(e \in J \setminus I\) such that \(I \cup \{e\} \in \mathcal{I}\). \label{item:matroid:exchange}
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Basis]
+    A \vocab{basis} for a set \(X \subseteq E\) in a matroid \(M = (E, \mathcal{I})\) is a maximal independent subset of \(X\).
+\end{definition}
+
+Note that every independent set \(I \subseteq X\) is contained in a basis for \(X\).
+One can consider infinite matroids by changing \ref{item:matroid:exchange} and making this note an axiom.
+
+A basis for \(M = (E, \mathcal{I})\) is a basis for \(E\) in \(M\).
+
+\begin{proposition}
+    For an \(X \subseteq E\) in a matroid \(M = (E, \mathcal{I})\), all bases for \(X\) have the same size.
+\end{proposition}
+
+\begin{proof}
+    Follows from \ref{item:matroid:exchange}.
+\end{proof}
+
+\begin{definition}[Rank]
+    The \vocab{rank} of a set \(X \subseteq E\) in \(M\) is the size of a basis for \(X\).
+    The \vocab{rank} of a matroid \(M = (E, \mathcal{I})\) is the rank of \(E\) in \(M\), i.e., the size of a basis for \(M\).
+\end{definition}
+
+\begin{proposition}
+    If \((E, \mathcal{I})\) satisfies \ref{item:matroid:nonempty}, \ref{item:matroid:hereditary}, and
+    \begin{enumerate}[label = \textup{(I\arabic*)}, start = 4]
+        \item for all \(X \subseteq E\), all maximal sets in \(\mathcal{I} \cap 2^X\) have the same size, \label{item:matroid:maximal}
+    \end{enumerate}
+    then \((E, \mathcal{I})\) is a matroid.
+\end{proposition}
+
+\begin{proof}
+    We need to show that \ref{item:matroid:exchange} holds.
+    Let \(I, J \in \mathcal{I}\) with \(|I| < |J|\).
+    Let \(X = I \cup J\).
+    By \ref{item:matroid:maximal}, \(I\) is not a maximal set in \(\mathcal{I} \cap 2^X\), therefore there exists \(e \in X \setminus I = J \setminus I\) such that \(I \cup \{e\} \in \mathcal{I}\).
+    Therefore, \ref{item:matroid:exchange} holds.
+\end{proof}
+
+\paragraph{Representable Matroids}
+
+Let \(\mathbf{F}\) be a field and \(A \in \mathbf{F}^{R \times E}\) be a matrix.
+Let \(\mathcal{I} = \{I \subseteq E : \text{the columns of } A[I] \text{ are linearly independent}\}\).
+Then \((E, \mathcal{I})\) is a matroid.
+
+\begin{proof}
+    \ref{item:matroid:nonempty} holds because the empty set is linearly independent.
+    \ref{item:matroid:hereditary} holds because any subset of a linearly independent set is linearly independent.
+    \ref{item:matroid:maximal} holds since, for each \(X \subseteq E\), the maximal sets in \(I \cap 2^X\) are the bases for the column space of \(A[X]\) contained in \(X\), which all have size equal to the rank of \(A[X]\).
+\end{proof}
+
+We write \(M(A)\) for the matroid \((E, \mathcal{I})\) obtained above for a matrix \(A\).
+A matrod of the form \(M(A)\) for some \(A \in \mathbf{F}^{R \times E}\) is called \vocab{\(\mathbf{F}\)-representable} (a.k.a. linear over \(\mathbf{F}\), for the algebra people).
+
+A \vocab{matrix} \(A\) in \(\mathbf{F}^{R \times E}\) is a function \(A \colon R \times E \to \mathbf{F}\).
+Note that rows and columns have no ordering.
+
+Some notes and questions:
+\begin{itemize}
+    \item If \(M\) is \(\mathbf{F}\)-representable, and \(\mathbf{F} \subseteq \mathbf{F}'\), then \(M\) is also \(\mathbf{F}'\)-representable.
+    \item Given \(\mathbf{F}\), which matroids are \(\mathbf{F}\)-representable?
+    \item Can different matrices represent the same matroid?
+
+    Yes! Elementary row operations, removing or appending redundant rows, and non-zero column scalings preserve the matroid. Also field automorphisms.
+
+    Still, these operations are not enough. For example, the matrices
+    \begin{equation}
+        \begin{bmatrix}
+            1 & 1 & 1 & 1 \\
+            0 & 1 & 2 & 3
+        \end{bmatrix}
+        \quad \text{and} \quad
+        \begin{bmatrix}
+            1 & 1 & 1 & 1 \\
+            7 & 41 & 29 & 87
+        \end{bmatrix}
+    \end{equation}
+\end{itemize}
+
+\begin{question}
+    Is every matroid \(\reals\)-representable?
+\end{question}
+\begin{proof}[Answer]
+    No, the Fano matroid is not \(\reals\)-representable.
+    If the Fano matroid is \(\mathbb{F}\)-representable, then you can show that \(\mathbb{F}\) has characteristic \(2\).
+\end{proof}
+
+
+\paragraph{Graphic Matroids}
+
+Let \(G = (V, E, \sim)\) be a (multi)graph.
+Let \(\mathcal{I} = \{ I \subseteq E : G[I] \text{ is acyclic} \}\).
+Then \((E, \mathcal{I})\) is a matroid.
+
+\begin{proof}
+    \ref{item:matroid:nonempty} holds because the empty set is acyclic.
+    \ref{item:matroid:hereditary} holds because any subset of an acyclic graph is acyclic.
+    \ref{item:matroid:maximal} holds since each spanning tree of each component of \(G[X]\) has the same size for all \(X \subseteq E\).
+\end{proof}
+
+We write \(M(G)\) for the matroid \((E, \mathcal{I})\) obtained above for a graph \(G\),
+called the \vocab{cycle matroid} of \(G\).
+If \(M\) is the cycle matroid of a graph, then we say that \(M\) is a \vocab{graphic matroid}.
+
+\begin{question}
+    Is every representable matroid a graphic matroid?
+\end{question}
+\begin{proof}[Answer]
+    No.
+    Consider the representable matroid
+    \begin{equation}
+        M\left(
+            \begin{bmatrix} 
+                1 & 1 & 1 & 1 & \cdots & 1 \\
+                1 & 2 & 3 & 4 & \cdots & n 
+            \end{bmatrix}
+        \right)
+        = U_{2, n}.
+    \end{equation}
+    If it was a graphic matroid,
+    then the graph would have no loops,
+    no pair of parallel edges,
+    and any three distinct edges contains a cycle.
+    This is impossible for \(n \geq 4\).
+\end{proof}
+
+\begin{proposition}
+    Let \(\mathbf{F}\) be a field.
+    Every graphic matroid is \(\mathbf{F}\)-representable.
+\end{proposition}
+
+\begin{proof}
+    Let \(G = (V, E, \sim)\) be a multigraph.
+    Arbitrarily orient the non-loop edges of \(G\) so that each non-loop edge \(e\) has a tail and a head.
+    Let \(A \in \mathbb{F}^{V \times E}\) be the incidence matrix of \(G\).
+    \begin{equation}
+        A_{v, e} = \begin{cases}
+            1 & \text{if } v \text{ is the tail of } e \\
+            -1 & \text{if } v \text{ is the head of } e \\
+            0 & \text{otherwise.}
+        \end{cases}
+    \end{equation}
+    The matrix \(A\) is a \vocab{signed incidence matrix} of \(G\).
+    We will prove that \(M(A) = M(G)\).
+
+    First, we claim that, if \(G[I]\) is acyclic, then the columns of \(A[I]\) are linearly independent. (That is, \(\mathcal{I}(M(G)) \subseteq \mathcal{I}(M(A))\).)
+    \textit{Proof of the claim.}
+    Let \(I\) be a minimal counterexample, so there exists coefficients \(c_e \in \mathbb{F}\) such that \(\sum_{e \in I} c_e A_{e} = 0\).
+    By minimality, all \(\lambda_e\) are nonzero.
+    But since \(G[I]\) is a nonempty forest, there exists a vertex \(w\) incident to exactly one edge \(f\) in \(I\) (a.k.a., a leaf).
+    Therefore, \(0 = 0_w = (\sum_{e \in I} c_e A_{e})_{w} = (c_fA_{f})_w = \pm c_f \neq 0\), a contradiction.
+
+    Now, we claim that, if \(G[X]\) contains a cycle \(C\), then \(A[X]\) has linearly dependent columns. (That is, \(2^E - \mathcal{I}(M(G)) \subseteq 2^E - \mathcal{I}(M(A))\).)
+    \textit{Proof of the claim.}
+    The \(V(C) \times E(C)\) submatrix of \(A\) is a square matrix whose rows sum to zero.
+    Therefore, its rows are linearly dependent, and consequently, its columns are linearly dependent.
+    Therefore, \(A[E(C)]\) has linearly dependent columns.
+
+    Hence, we have \(\mathcal{I}(M(G)) = \mathcal{I}(M(A))\), which implies that \(M(G)\) is \(\mathbb{F}\)-representable.
+\end{proof}
+
+Some notes:
+\begin{itemize}
+    \item If \(\mathbf{F}\) has characteristic \(2\), then \(1 = -1\), so orientations are not needed.
+    \item The rows of \(A(G)\) always sum to zero, so they are linearly dependent.
+    \item If \(\operatorname{char}(\mathbf{F}) \neq 2\), we really do need signs, otherwise we get a (usually different) matroid that depends on the field.
+\end{itemize}
+
+\paragraph{Some Terminology}
+
+\begin{itemize}
+    \item A matroid that is representable over \emph{every} field is \vocab{regular}.
+    \item A \vocab{circuit} of a matroid is a minimal dependent set.
+    Note that a circuit of \(M(G)\) is precisely the edge set of a cycle in \(G\).
+    \item Circuits of sizes \(1\), \(2\) and \(3\) are called \vocab{loops}, \vocab{parallel pairs} and \vocab{triangles}, respectively.
+    \item Being parallel (equal or a parallel pair) is an equivalence relation.
+\end{itemize}
+
+\paragraph{More about rank}
+
+The rank \(r_M(X)\) is the size of each basis for \(X\) in \(M\).
+We have
+\begin{enumerate}[label = \textup{(R\arabic*)}]
+    \item \(0 \leq r_M(X) \leq |X|\) for all \(X \subseteq E\), \label{item:rank:bounded}
+    \item \(r_M(X) = r_M(Y)\) if \(X\) and \(Y\) are independent sets, \label{item:rank:subset}
+    \item \(r_M(X) + r_M(Y) \leq r_M(X \cup Y) + r_M(X \cap Y)\) for all \(X, Y \subseteq E\), \label{item:rank:submodularity}
+    
+    \begin{proof}[Proof of \ref{item:rank:submodularity}]
+        Let \(I\) be a basis for \(X \cap Y\), and let \(J\) be a basis for \(X \cup Y\) containing \(I\).
+        Note that \(J \cap X\) is an independent set in \(X\) and \(J \cap Y\) is an independent set in \(Y\),
+        therefore \(r_M(X) \geq |J \cap X|\) and \(r_M(Y) \geq |J \cap Y|\).
+        Therefore, we have
+        \begin{equation}
+            \begin{aligned}
+                r_M(X) + r_M(Y) &\geq |J \cap X| + |J \cap Y| \\
+                &= |J \cap (X \cup Y)| + |J \cap (X \cap Y)| \\
+                &\geq |J| + |I| \\
+                &= r_M(X \cup Y) + r_M(X \cap Y).
+            \end{aligned}
+        \end{equation}
+    \end{proof}
+\end{enumerate}
+
+\begin{proposition}
+    If \(r \colon 2^E \to \nonnegatives\) satisfies
+    \begin{enumerate}[label = \textup{(r\arabic*)}]
+        \item \(r(\varnothing) = 0\), \label{item:rank:empty}
+        \item \(r(X + e) \leq r(X) + 1\) for all \(X \subseteq E\) and \(e \in E - X\), \label{item:rank:bounded}
+        \item \(r(X + e) + r(X + f) \geq  r(X + e + f) + r(X)\) for all \(X \subseteq E\) and \(e, f \in E - X\) (possibly \(e = f\)), \label{item:rank:submodularity}
+    \end{enumerate}
+    then \((E, \{I \subseteq E : r(I) = |I|\})\) is a matroid whose rank function is \(r\).
+\end{proposition}
+
+This will be proved later.
+
+\begin{lemma}[``Diminishing returns'']
+    Assume that \(r \colon 2^E \to \nonnegatives\) satisfies \ref{item:rank:empty}, \ref{item:rank:bounded}, and \ref{item:rank:submodularity}.
+    Then,
+    \begin{equation}
+        r(X + e) - r(X) \leq r(Y + e) - r(Y)
+    \end{equation}
+    for all \(X \subseteq Y \subseteq E\) and \(e \in E\).
+\end{lemma}
