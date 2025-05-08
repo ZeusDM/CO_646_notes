@@ -1,0 +1,130 @@
+\documentclass[notitlepage]{scrbook}
+\KOMAoptions{
+	DIV=12,
+	fontsize=12pt,
+	paper=letter,
+	twoside=false,
+	parskip=half-,
+}
+\usepackage[onehalfspacing, nodisplayskipstretch]{setspace}
+\usepackage{amsmath, amssymb, amsfonts, stmaryrd}
+\usepackage{enumitem}
+\setlist{noitemsep}
+\setlist[enumerate]{label={(\alph*)}}
+
+\usepackage[T1]{fontenc}
+\usepackage{mlmodern}  
+\makeatletter
+\input{t1mlmr.fd}
+\makeatother
+\DeclareFontShape{T1}{mlmr}{m}{scit}{<->ssub*mlmr/m/scsl}{}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows, positioning}
+\usepackage{subcaption}
+
+\usepackage{xcolor}
+\usepackage[
+    colorlinks=true,
+    linkcolor=blue!60!black,      % For internal links
+    citecolor=green!70!black,     % For citation links
+    urlcolor=orange!70!black,      % For URLs
+    filecolor=cyan!60!black        % For file links
+]{hyperref}
+
+\usepackage[canadian]{babel}
+\usepackage{csquotes}
+\usepackage[showseconds=false, showzone=false]{datetime2}
+\DTMsettimestyle{en-CA}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newtheorem{question}{Question}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\vocab}[1]{\textbf{#1}}
+
+\usepackage[mathscr]{eucal}     % For \EuScript
+\usepackage{mathtools}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\ge}{\geqslant}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\le}{\leqslant}
+\usepackage{booktabs}
+
+\newcommand{\val}{\operatorname{val}}
+
+% Integers
+\newcommand{\integers}{\mathbb{Z}}
+
+% Nonnegative integers
+\newcommand{\nonnegatives}{\mathbb{N}}
+
+% Positive integers
+\newcommand{\positives}{\integers_{> 0}}
+
+% Rational numbers
+\newcommand{\rationals}{\mathbb{Q}}
+
+% Real numbers
+\newcommand{\reals}{\mathbb{R}}
+
+% Complex numbers
+\newcommand{\complexes}{\mathbb{C}}
+
+% https://tex.stackexchange.com/questions/343136/inline-spacing-within-the-cases-command-when-document-is-in-doublespace-mode
+\makeatletter
+\newcommand\new@setfontsize[3]{%
+    \ifx \protect \@typeset@protect \let \@currsize #1\fi \fontsize {#2}{#3}\selectfont
+}
+\let\orig@setfontsize\@setfontsize
+\let\orig@cases\cases
+\let\endorig@cases\endcases
+
+\renewenvironment{cases}{%
+    \let\@setfontsize\new@setfontsize
+    \setstretch{\setspace@singlespace}%
+    \let\setfontsize\orig@setfontsize
+    \orig@cases
+}{%
+    \endorig@cases
+}
+\makeatother
+
+% \DeclareFontShape{TU}{lmr}{m}{scit}{<->ssub * lmr/m/scsl}{}
+
+\usepackage[style=alphabetic, backend=biber,isbn=false,url=false]{biblatex} 
+\addbibresource{references.bib}
+
+\title{Notes for Madroid Theory}
+\author{Mantained by Guilherme Zeus Dantas e Moura}
+\date{Last updated on \DTMnow.}
+
+\begin{document}
+	\maketitle
+
+  This document contains my lecture notes for CO 646, Matroid Theory,
+  taught by Peter Nelson at the University of Waterloo in the Spring 2025 term.
+  Any errors, inaccuracies, or misinterpretations are entirely my own.
+  Use these notes at your own discretion.
+  If you find any errors, please:
+  \begin{itemize}
+    \item submit a pull request to the GitHub repository, or 
+    \item request access to the Overleaf project, or
+    \item report the error to me directly.
+  \end{itemize}
+
+  \tableofcontents
+
+  \input{chapters/01_introduction.tex}
+
+  % \printbibliography
+\end{document}
