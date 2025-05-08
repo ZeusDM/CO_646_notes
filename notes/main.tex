@@ -20,7 +20,7 @@
 \DeclareFontShape{T1}{mlmr}{m}{scit}{<->ssub*mlmr/m/scsl}{}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows, positioning}
+\usetikzlibrary{arrows, positioning, calc}
 \usepackage{subcaption}
 
 \usepackage{xcolor}
@@ -44,11 +44,13 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{definition}
-\newtheorem{problem}{Problem}
-\newtheorem{question}{Question}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{question}[theorem]{Question}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
 
 \newcommand{\vocab}[1]{\textbf{#1}}
 
@@ -104,8 +106,8 @@
 \usepackage[style=alphabetic, backend=biber,isbn=false,url=false]{biblatex} 
 \addbibresource{references.bib}
 
-\title{Notes for Madroid Theory}
-\author{Mantained by Guilherme Zeus Dantas e Moura}
+\title{Notes for Matroid Theory}
+\author{Maintained by Guilherme Zeus Dantas e Moura}
 \date{Last updated on \DTMnow.}
 
 \begin{document}

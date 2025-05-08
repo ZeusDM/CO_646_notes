@@ -1,5 +1,7 @@
 \chapter{Matroids}
 
+\section{Definition}
+
 \begin{definition}[Matroid]
     A (finite) \vocab{matroid} is a pair \( (E, \mathcal{I}) \) where
     \(E\) is a finite set, called the \vocab{ground set}, and
@@ -13,12 +15,13 @@
 
 \begin{definition}[Basis]
     A \vocab{basis} for a set \(X \subseteq E\) in a matroid \(M = (E, \mathcal{I})\) is a maximal independent subset of \(X\).
+    A basis for \(M = (E, \mathcal{I})\) is a basis for \(E\) in \(M\).
 \end{definition}
 
-Note that every independent set \(I \subseteq X\) is contained in a basis for \(X\).
+\begin{note}
+    Every independent set \(I \subseteq X\) is contained in a basis for \(X\).
+\end{note}
 One can consider infinite matroids by changing \ref{item:matroid:exchange} and making this note an axiom.
-
-A basis for \(M = (E, \mathcal{I})\) is a basis for \(E\) in \(M\).
 
 \begin{proposition}
     For an \(X \subseteq E\) in a matroid \(M = (E, \mathcal{I})\), all bases for \(X\) have the same size.
@@ -49,10 +52,13 @@ A basis for \(M = (E, \mathcal{I})\) is a basis for \(E\) in \(M\).
     Therefore, \ref{item:matroid:exchange} holds.
 \end{proof}
 
-\paragraph{Representable Matroids}
+\section{Representable Matroids}
 
-Let \(\mathbf{F}\) be a field and \(A \in \mathbf{F}^{R \times E}\) be a matrix.
-Let \(\mathcal{I} = \{I \subseteq E : \text{the columns of } A[I] \text{ are linearly independent}\}\).
+Let \(\mathbb{F}\) be a field and \(A \in \mathbb{F}^{R \times E}\) be a matrix.
+Let
+\begin{equation}
+    \mathcal{I} = \{I \subseteq E : \text{the columns of } A[I] \text{ are linearly independent}\}.
+\end{equation}
 Then \((E, \mathcal{I})\) is a matroid.
 
 \begin{proof}
@@ -62,19 +68,25 @@ Then \((E, \mathcal{I})\) is a matroid.
 \end{proof}
 
 We write \(M(A)\) for the matroid \((E, \mathcal{I})\) obtained above for a matrix \(A\).
-A matrod of the form \(M(A)\) for some \(A \in \mathbf{F}^{R \times E}\) is called \vocab{\(\mathbf{F}\)-representable} (a.k.a. linear over \(\mathbf{F}\), for the algebra people).
+A matroid of the form \(M(A)\) for some \(A \in \mathbb{F}^{R \times E}\) is called \vocab{\(\mathbb{F}\)-representable} (a.k.a. linear over \(\mathbb{F}\), for the algebra people).
 
-A \vocab{matrix} \(A\) in \(\mathbf{F}^{R \times E}\) is a function \(A \colon R \times E \to \mathbf{F}\).
+A \vocab{matrix} \(A\) in \(\mathbb{F}^{R \times E}\) is a function \(A \colon R \times E \to \mathbb{F}\).
 Note that rows and columns have no ordering.
 
-Some notes and questions:
-\begin{itemize}
-    \item If \(M\) is \(\mathbf{F}\)-representable, and \(\mathbf{F} \subseteq \mathbf{F}'\), then \(M\) is also \(\mathbf{F}'\)-representable.
-    \item Given \(\mathbf{F}\), which matroids are \(\mathbf{F}\)-representable?
-    \item Can different matrices represent the same matroid?
+\begin{note}
+    If \(M\) is \(\mathbb{F}\)-representable, and \(\mathbb{F} \subseteq \mathbb{F}'\), then \(M\) is also \(\mathbb{F}'\)-representable.
+\end{note}
 
+\begin{question}
+    Given \(\mathbb{F}\), which matroids are \(\mathbb{F}\)-representable?
+\end{question}
+
+\begin{question}
+    Can different matrices represent the same matroid?
+\end{question}
+
+\begin{proof}[Answer]
     Yes! Elementary row operations, removing or appending redundant rows, and non-zero column scalings preserve the matroid. Also field automorphisms.
-
     Still, these operations are not enough. For example, the matrices
     \begin{equation}
         \begin{bmatrix}
@@ -87,18 +99,37 @@ Some notes and questions:
             7 & 41 & 29 & 87
         \end{bmatrix}
     \end{equation}
-\end{itemize}
+\end{proof}
 
 \begin{question}
     Is every matroid \(\reals\)-representable?
 \end{question}
+
 \begin{proof}[Answer]
-    No, the Fano matroid is not \(\reals\)-representable.
-    If the Fano matroid is \(\mathbb{F}\)-representable, then you can show that \(\mathbb{F}\) has characteristic \(2\).
+    No.
+    The Fano matroid \(F_7\) is formed by taking the Fano plane's points as the ground set,
+    and the three-element noncollinear subsets as bases.
+    The Fano matroid \(F_7\) is not \(\reals\)-representable.
+    More generally, if the Fano matroid \(F_7\) is \(\mathbb{F}\)-representable,
+    then it can be shown that \(\mathbb{F}\) has characteristic \(2\).
 \end{proof}
 
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[ mydot/.style={ draw, circle, fill=black, inner sep=1.5pt} ]
+        \draw (0,0) coordinate (A) -- (2,0) coordinate (B) -- ($ (A)!.5!(B) ! {sin(60)*2} ! 90:(B) $) coordinate (C) -- cycle;
+        \coordinate (O) at (barycentric cs:A=1,B=1,C=1);
+        \draw (C) -- ($ (A)!.5!(B) $) coordinate (LC); 
+        \draw (A) -- ($ (B)!.5!(C) $) coordinate (LA); 
+        \draw (B) -- ($ (C)!.5!(A) $) coordinate (LB); 
+        \draw (O) circle [radius=0.56cm];
+        \foreach \Nodo in {A,B,C,O,LC,LA,LB} \node[mydot] at (\Nodo) {};    
+    \end{tikzpicture} 
+    \caption{The Fano plane.}
+    \label{fig:fano}
+\end{figure}
 
-\paragraph{Graphic Matroids}
+\section{Graphic Matroids}
 
 Let \(G = (V, E, \sim)\) be a (multi)graph.
 Let \(\mathcal{I} = \{ I \subseteq E : G[I] \text{ is acyclic} \}\).
@@ -117,6 +148,7 @@ If \(M\) is the cycle matroid of a graph, then we say that \(M\) is a \vocab{gra
 \begin{question}
     Is every representable matroid a graphic matroid?
 \end{question}
+
 \begin{proof}[Answer]
     No.
     Consider the representable matroid
@@ -137,8 +169,8 @@ If \(M\) is the cycle matroid of a graph, then we say that \(M\) is a \vocab{gra
 \end{proof}
 
 \begin{proposition}
-    Let \(\mathbf{F}\) be a field.
-    Every graphic matroid is \(\mathbf{F}\)-representable.
+    Let \(\mathbb{F}\) be a field.
+    Every graphic matroid is \(\mathbb{F}\)-representable.
 \end{proposition}
 
 \begin{proof}
@@ -171,24 +203,32 @@ If \(M\) is the cycle matroid of a graph, then we say that \(M\) is a \vocab{gra
     Hence, we have \(\mathcal{I}(M(G)) = \mathcal{I}(M(A))\), which implies that \(M(G)\) is \(\mathbb{F}\)-representable.
 \end{proof}
 
-Some notes:
-\begin{itemize}
-    \item If \(\mathbf{F}\) has characteristic \(2\), then \(1 = -1\), so orientations are not needed.
-    \item The rows of \(A(G)\) always sum to zero, so they are linearly dependent.
-    \item If \(\operatorname{char}(\mathbf{F}) \neq 2\), we really do need signs, otherwise we get a (usually different) matroid that depends on the field.
-\end{itemize}
+\begin{note}
+    If \(\mathbb{F}\) has characteristic \(2\), then \(1 = -1\), so orientations are not needed.
+\end{note}
 
-\paragraph{Some Terminology}
+\begin{note}
+    The rows of \(A(G)\) always sum to zero, so they are linearly dependent.
+\end{note}
+
+\begin{note}
+    If \(\operatorname{char}(\mathbb{F}) \neq 2\), we really do need signs, otherwise we get a (usually different) matroid that depends on the field.
+\end{note}
+
+\section{Terminology}
 
 \begin{itemize}
     \item A matroid that is representable over \emph{every} field is \vocab{regular}.
     \item A \vocab{circuit} of a matroid is a minimal dependent set.
     Note that a circuit of \(M(G)\) is precisely the edge set of a cycle in \(G\).
     \item Circuits of sizes \(1\), \(2\) and \(3\) are called \vocab{loops}, \vocab{parallel pairs} and \vocab{triangles}, respectively.
-    \item Being parallel (equal or a parallel pair) is an equivalence relation.
 \end{itemize}
 
-\paragraph{More about rank}
+\begin{note}
+    Being parallel (equal or a parallel pair) is an equivalence relation.
+\end{note}
+
+\section{Rank Function and Properties}
 
 The rank \(r_M(X)\) is the size of each basis for \(X\) in \(M\).
 We have
@@ -202,14 +242,12 @@ We have
         Note that \(J \cap X\) is an independent set in \(X\) and \(J \cap Y\) is an independent set in \(Y\),
         therefore \(r_M(X) \geq |J \cap X|\) and \(r_M(Y) \geq |J \cap Y|\).
         Therefore, we have
-        \begin{equation}
-            \begin{aligned}
-                r_M(X) + r_M(Y) &\geq |J \cap X| + |J \cap Y| \\
-                &= |J \cap (X \cup Y)| + |J \cap (X \cap Y)| \\
-                &\geq |J| + |I| \\
-                &= r_M(X \cup Y) + r_M(X \cap Y).
-            \end{aligned}
-        \end{equation}
+        \begin{align*}
+            r_M(X) + r_M(Y) &\geq |J \cap X| + |J \cap Y| \\
+            &= |J \cap (X \cup Y)| + |J \cap (X \cap Y)| \\
+            &\geq |J| + |I| \\
+            &= r_M(X \cup Y) + r_M(X \cap Y). \qedhere
+        \end{align*}
     \end{proof}
 \end{enumerate}
 
@@ -217,8 +255,8 @@ We have
     If \(r \colon 2^E \to \nonnegatives\) satisfies
     \begin{enumerate}[label = \textup{(r\arabic*)}]
         \item \(r(\varnothing) = 0\), \label{item:rank:empty}
-        \item \(r(X + e) \leq r(X) + 1\) for all \(X \subseteq E\) and \(e \in E - X\), \label{item:rank:bounded}
-        \item \(r(X + e) + r(X + f) \geq  r(X + e + f) + r(X)\) for all \(X \subseteq E\) and \(e, f \in E - X\) (possibly \(e = f\)), \label{item:rank:submodularity}
+        \item \(r(X + e) \leq r(X) + 1\) for all \(X \subseteq E\) and \(e \in E - X\), \label{item:rank:step}
+        \item \(r(X + e) + r(X + f) \geq  r(X + e + f) + r(X)\) for all \(X \subseteq E\) and \(e, f \in E - X\) (possibly \(e = f\)), \label{item:rank:submodularity2}
     \end{enumerate}
     then \((E, \{I \subseteq E : r(I) = |I|\})\) is a matroid whose rank function is \(r\).
 \end{proposition}
