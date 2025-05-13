@@ -234,7 +234,7 @@ The rank \(r_M(X)\) is the size of each basis for \(X\) in \(M\).
 We have
 \begin{enumerate}[label = \textup{(R\arabic*)}]
     \item \(0 \leq r_M(X) \leq |X|\) for all \(X \subseteq E\), \label{item:rank:bounded}
-    \item \(r_M(X) = r_M(Y)\) if \(X\) and \(Y\) are independent sets, \label{item:rank:subset}
+    \item \(r_M(X) = r_M(Y)\) if \(X\) and \(Y\) are independent sets, \label{item:rank:motonocity}
     \item \(r_M(X) + r_M(Y) \leq r_M(X \cup Y) + r_M(X \cap Y)\) for all \(X, Y \subseteq E\), \label{item:rank:submodularity}
     
     \begin{proof}[Proof of \ref{item:rank:submodularity}]
@@ -251,7 +251,7 @@ We have
     \end{proof}
 \end{enumerate}
 
-\begin{proposition}
+\begin{proposition} \label{prop:rank:newaxioms}
     If \(r \colon 2^E \to \nonnegatives\) satisfies
     \begin{enumerate}[label = \textup{(r\arabic*)}]
         \item \(r(\varnothing) = 0\), \label{item:rank:empty}
@@ -263,11 +263,202 @@ We have
 
 This will be proved later.
 
-\begin{lemma}[``Diminishing returns'']
-    Assume that \(r \colon 2^E \to \nonnegatives\) satisfies \ref{item:rank:empty}, \ref{item:rank:bounded}, and \ref{item:rank:submodularity}.
+\begin{lemma}[``Diminishing returns''] \label{lemma:diminishing}
+    Assume that \(r \colon 2^E \to \nonnegatives\) satisfies \ref{item:rank:empty}, \ref{item:rank:step}, and \ref{item:rank:submodularity2}.
     Then,
     \begin{equation}
-        r(X + e) - r(X) \leq r(Y + e) - r(Y)
+        r(X + e) - r(X) \geq r(Y + e) - r(Y)
     \end{equation}
     for all \(X \subseteq Y \subseteq E\) and \(e \in E\).
 \end{lemma}
+
+\begin{proof}
+    The proof is by induction on \(|Y - X|\).
+    If \(|Y - X| = 0\), then \(Y = X\) and the result holds.
+    Otherwise, there exists \(f \in Y - X\).
+    If \(e \in X \subset Y\), then 
+    \begin{equation}
+        r(X + e) - r(X) = 0 \geq 0 = r(Y + e) - r(Y).
+    \end{equation}
+    If \(e \in Y - X\), then
+    \begin{align*}
+        r(X + e) - r(X)
+        &\geq r((X+f)+e) - r(X + f) & \text{(by \ref{item:rank:submodularity2})} \\
+        &\geq r(Y + e) - r(Y) & \text{(by induction hypothesis)}.
+    \end{align*}
+\end{proof}
+
+\begin{proof}[Proof of \ref{prop:rank:newaxioms}]
+    \ref{item:matroid:nonempty} is trivial since \(\varnothing \in \mathcal{I}\).
+    \ref{item:rank:step} and induction gives 
+    \begin{equation}
+        r(X \cup A) \leq r(X) + |A|.
+    \end{equation}
+    If \(J \in \mathcal{I}\) and \(I \subseteq J\), then
+    \begin{equation}
+        |J| = r(J) \leq r(I) + |J - I|,
+    \end{equation}
+    and consequently \(r(I) \geq |I|\).
+    Also, \(r(I) = r(\varnothing \cup I) \leq r(\varnothing) + |I| = |I|\).
+    Therefore, \(|I| = r(I)\) and consequently \(I \in \mathcal{I}\).
+    Thus, \ref{item:matroid:hereditary} holds.
+
+    Now we claim that, for \(X \subset E\), each maximal set in \(\mathcal{I} \cap 2^X\) has \(|I| = r(X)\).
+    \textit{Proof of the claim.}
+    Let \(Y\) be maximal such that \(I \subset Y \subset X\) and \(r(Y) = |I|\).
+    If \(Y = X\), we are done.
+    Otherwise, let \(f \in  X - Y\)
+    By maximality of \(Y\), \(r(Y + f) > r(Y)\), and consequently
+    \begin{equation}
+        0 < r(Y + f) - r(Y) \leq r(I + f) - r(I) \leq 0,
+    \end{equation}
+    so \ref{item:matroid:maximal} holds.
+
+    Therefore, \((E, \mathcal{I})\) is a matroid and the rank function is \(r\) by the previous claim.
+\end{proof}
+
+Since the rank function of any matroid satisfies \ref{item:rank:empty}, \ref{item:rank:step}, and \ref{item:rank:submodularity2} (it's not hard to show), this means that \ref{item:rank:empty}, \ref{item:rank:step}, and \ref{item:rank:submodularity2} give an alternative definition of matroids.
+
+\begin{note}
+    \ref{item:rank:bounded}, \ref{item:rank:motonocity}, and \ref{item:rank:submodularity} imply \ref{item:rank:empty}, \ref{item:rank:step}, and \ref{item:rank:submodularity2}, so they also define a matroid, although not all matroids are obtained this way.
+\end{note}
+
+\section{Closure}
+
+Consider a set of vectors \(v_1, v_2, v_3, w\), and suppose you want to determine whether \(w \in \operatorname{span}(v_1, v_2, v_3)\).
+In the language of matroids, this is equivalent to checking whether \(r(\{v_1, v_2, v_3, w\}) > r(\{v_1, v_2, v_3\})\).
+
+\begin{definition}[Closure]
+    For a subset \(X \subseteq E\), the \vocab{closure} of \(X\) in a matroid \(M\) is defined as
+    \begin{equation}
+        \operatorname{cl}_M(X) = \{e \in E : r(X + e) = r(X)\}.
+    \end{equation}
+\end{definition}
+
+The closure can be thought of as analogous to the concept of span in vector spaces.
+
+\begin{proposition} \label{prop:closure:inside}
+    \(X \subseteq \operatorname{cl}_M(X)\) for all \(X \subseteq E\).
+\end{proposition}
+
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{proposition} \label{prop:closure:monotonicity}
+    If \(X \subseteq Y\), then \(\operatorname{cl}_M(X) \subseteq \operatorname{cl}_M(Y)\).
+\end{proposition}
+
+\begin{proof}
+    Follows from \ref{lemma:diminishing}.
+\end{proof}
+
+\begin{proposition} \label{prop:closure:rank}
+    If \(X \subseteq E\), then \(r(X) = r(\operatorname{cl}_M(X))\).
+\end{proposition}
+
+\begin{proof}
+    Let \(Y\) be maximal such that \(X \subseteq Y \subseteq \operatorname{cl}_M(X)\) and \(r(Y) = r(X)\).
+    If \(Y = \operatorname{cl}_M(X)\), we are done.
+    Otherwise, let \(e \in \operatorname{cl}_M(X) - Y\).
+    Since \(e \in \operatorname{cl}_M(X)\), we have \(r(X + e) = r(X)\).
+    By the monotonicity of rank, \(r(Y + e) \geq r(Y)\), and since \(Y \subseteq \operatorname{cl}_M(X)\), we also have \(r(Y + e) \leq r(\operatorname{cl}_M(X)) = r(X)\).
+    Therefore, \(r(Y + e) = r(Y)\), contradicting the maximality of \(Y\).
+    Hence, \(Y = \operatorname{cl}_M(X)\), and \(r(\operatorname{cl}_M(X)) = r(X)\).
+\end{proof}
+
+\begin{proposition} \label{prop:closure:idempotent}
+    Closure is idempotent,
+    that is,
+    \(\operatorname{cl}_M(\operatorname{cl}_M(X)) = \operatorname{cl}_M(X)\) for all \(X \subseteq E\).
+\end{proposition}
+
+\begin{proof}
+    On the one hand, \(\operatorname{cl}_M(X) \subseteq \operatorname{cl}_M(\operatorname{cl}_M(X))\) by \ref{prop:closure:inside}.
+    On the other hand, if \(e \in \operatorname{cl}_M(\operatorname{cl}_M(X))\),
+    then \(r(X) = r(\operatorname{cl}_M(X)) = r(\operatorname{cl}_M(X) + e) \geq e(X + e)\),
+    but also \(r(X) \leq r(X + e)\), so \(e \in \operatorname{cl}_M(X)\).
+    Therefore, \(\operatorname{cl}_M(X) = \operatorname{cl}_M(\operatorname{cl}_M(X))\).
+\end{proof}
+
+\begin{proposition} \label{prop:closure:union}
+    \(\operatorname{cl}_M( \operatorname{cl}_M(X) \cup \operatorname{cl}_M(Y) ) = \operatorname{cl}_M(X \cup Y)\) for all \(X, Y \subseteq E\).
+\end{proposition}
+
+\begin{proof}
+    On the one hand, by monotonicity, we have \( \operatorname{cl}_M(X \cup Y) \subseteq \operatorname{cl}_M( \operatorname{cl}_M(X) \cup \operatorname{cl}_M(Y) )\).
+    On the other hand, 
+    \begin{equation}
+        \operatorname{cl}_M( X \cup Y ) = \operatorname{cl}_M( \operatorname{cl}_M( X \cup Y ) ) \supseteq \operatorname{cl}_M( \operatorname{cl}_M(X) \cup \operatorname{cl}_M(Y) )
+    \end{equation}
+    because \(\operatorname{cl}_M(X) \subset \operatorname{cl}_M(X \cup Y)\) and \(\operatorname{cl}_M(Y) \subset \operatorname{cl}_M(X \cup Y)\).
+\end{proof}
+
+If you want to axiomatize closure, then you'd need Propositions~\ref{prop:closure:inside}, \ref{prop:closure:monotonicity}, \ref{prop:closure:idempotent}, and also a fourth axiom we won't prove here.
+
+\section{Duality}
+
+In this section, we define the dual of a matroid, explore its properties, and prove that duality is an involution.
+
+\begin{definition}[Dual]
+    Given a matroid \(M = (E, \mathcal{I})\),
+    the \vocab{dual} of \(M\) is the matroid \(M^*\)
+    whose bases are the complements of the bases of \(M\).
+\end{definition}
+
+The definition above specifies at most one matroid as the dual, but it is not immediately clear that the dual of a matroid is always a matroid. We will delay the proof of this fact until later. However, assuming the construction is valid, it follows directly that duality is an involution, i.e., \((M^*)^* = M\).
+
+\subsection{Construction of the Dual Matroid}
+
+Since a matroid is determined by its bases,
+the above does uniquely define a matroid provided that it is actually a matroid.
+We will prove it is a matroid by reconstructing its rank function.
+
+Since \(r_M(X) = \max\{ |B \cap X| : B \text{ is a basis of } M\}\).
+Therefore,
+\begin{align*}
+    r_{M^*}(X)
+    &= \max\{ |B \cap X| : B \text{ is a basis of } M^*\} \\
+    &= \max\{ |(E - B) \cap X| : B \text{ is a basis of } M\} \\
+    &= \max\{ |X| - |B| + |B \cap (E - X)| : B \text{ is a basis of } M\} \\
+    &= |X| - r(M) + \max\{ |B \cap (E - X)| : B \text{ is a basis of } M\} \\
+    &= |X| - r(M) + r_M(E - X).
+\end{align*}
+
+It's really easy to prove that \(r'(X) = |X| - r_M(E) + r_M(E - X)\) satisfies \ref{item:rank:bounded}, \ref{item:rank:motonocity}, and \ref{item:rank:submodularity}.
+
+\begin{proof}[Proof of \ref{item:rank:bounded}]
+    \(r'(X) = |X| - r_M(E) + r_M(E - X) \leq |X|\) by \ref{item:rank:motonocity}.
+\end{proof}
+
+\begin{proof}[Proof of \ref{item:rank:motonocity}]
+    If \(X \subseteq Y\),
+    then
+    \begin{align*}
+        r'(Y) - r'(X)
+        &= |Y - X| + r_M(E - Y) - r_M(E - X) \\
+        &\geq r_M(Y - X) + r_M(E - Y) - r_M(E - X) \\
+        &\geq r_M( (Y - X) \cup (E - Y) ) - r_M( E - X ) = 0.
+    \end{align*}
+\end{proof}
+
+\begin{proof}[Proof of \ref{item:rank:submodularity}]
+    Similar.
+\end{proof}
+
+\begin{proposition}
+    \(B\) is a basis of \(M^*\) if and only if \(E - B\) is a basis of \(M\).
+\end{proposition}
+
+\begin{proof}
+    \begin{align*}
+        B \text{ is a basis of } M^*
+        &\iff r_{M^*}(B) = r(M^*) \\
+        &\iff |B| - r_M(E) + r_M(E - B) = |E| - r(M) \\
+        &\iff r_M(E - B) = r(M) = |E - B| \\
+        &\iff E - B \text{ is a basis of } M.
+    \end{align*}
+\end{proof}
+
+The prefix \emph{co} dualizes a matroid term.
+For example, \(I\) is \vocab{coindependent} if, and only if, \(|I| = r_{M^*}(I) = |I| - r(M) + r_M(E - I)\) if, and only if, \(r(M) = r_M(E - I)\).
