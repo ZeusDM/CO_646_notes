@@ -1,3 +1,5 @@
+**I dropped this course, so I won't be updating this repository anymore.**
+
 # CO 646 — Matroid Theory
 
 This repository contains my notes for the course CO 646 — Matroid Theory at the University of Waterloo,
